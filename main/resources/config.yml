@@ -1,0 +1,51 @@
+# AdvancedBows Configuration
+
+bows:
+  multishot:
+    default_arrow_count: 3
+    default_max_deviation: 5.0
+    particles:
+      trail: CRIT
+      impact: FLAME
+
+  homing:
+    default_target_type: PLAYER
+    default_range: 10.0
+    default_pursuit: 0.5
+    particles:
+      normal_trail: END_ROD
+      homing_trail: DRIP_LAVA
+      impact: LAVA
+
+  end:
+    default_target_type: PLAYER
+    default_range: 10.0
+    default_teleport_threshold: 3.0
+    default_teleport_radius: 3.0
+    default_teleport_height: 5.0
+    particles:
+      trail: DRAGON_BREATH
+      disappear: PORTAL
+      reappear: DRAGON_BREATH
+      impact: PORTAL
+
+  yoimiya:
+    default_target_type: "PLAYER"
+    default_range: 10.0
+    default_pursuit: 0.7
+
+  explosion:
+    default_charge_time: 3.0
+    default_explosion_power: 2.0
+
+  soul:
+    default_target_type: "PLAYER"
+    default_range: 8.0
+    default_beam_length: 20.0
+    default_fang_radius: 3.0
+    default_fang_count: 8
+
+settings:
+  debug: false
+  max_arrow_count: 50
+  max_deviation: 45.0

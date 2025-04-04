@@ -1,0 +1,14 @@
+name: AdvancedBows
+version: 1.0.0
+main: com.example.advancedbows.AdvancedBows
+api-version: 1.16
+description: Adds special bows with different shooting mechanics
+commands:
+  givebow:
+    description: Gives a special bow to a player
+    usage: /givebow <player> <bow_type> [parameters...]
+    permission: advancedbows.give
+permissions:
+  advancedbows.give:
+    description: Allows giving special bows
+    default: op
