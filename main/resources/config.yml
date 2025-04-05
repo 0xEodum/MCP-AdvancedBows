@@ -45,6 +45,13 @@ bows:
     default_fang_radius: 3.0
     default_fang_count: 8
 
+  cursed:
+    default_target_type: "PLAYER"
+    default_range: 10.0
+    default_charge_time: 3.0
+    default_damage_percent: 5.0
+    default_effect_duration: 5
+
 settings:
   debug: false
   max_arrow_count: 50

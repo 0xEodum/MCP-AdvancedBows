@@ -73,4 +73,23 @@ public class ConfigManager {
     public int getDefaultSoulFangCount() {
         return config.getInt("bows.soul.default_fang_count", 8);
     }
+    public String getDefaultCursedTargetType() {
+        return config.getString("bows.cursed.default_target_type", "PLAYER");
+    }
+
+    public double getDefaultCursedRange() {
+        return config.getDouble("bows.cursed.default_range", 10.0);
+    }
+
+    public double getDefaultCursedChargeTime() {
+        return config.getDouble("bows.cursed.default_charge_time", 3.0);
+    }
+
+    public double getDefaultCursedDamagePercent() {
+        return config.getDouble("bows.cursed.default_damage_percent", 5.0);
+    }
+
+    public int getDefaultCursedEffectDuration() {
+        return config.getInt("bows.cursed.default_effect_duration", 5);
+    }
 }

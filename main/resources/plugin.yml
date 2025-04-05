@@ -1,5 +1,5 @@
 name: AdvancedBows
-version: 1.0.0
+version: 1.1.0
 main: com.example.advancedbows.AdvancedBows
 api-version: 1.16
 description: Adds special bows with different shooting mechanics

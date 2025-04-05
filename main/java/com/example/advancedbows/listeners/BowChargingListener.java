@@ -54,7 +54,7 @@ public class BowChargingListener implements Listener {
         Optional<SpecialBow> specialBow = plugin.getBowManager().getBowForItem(item);
         if (!specialBow.isPresent()) return;
         String bowType = specialBow.get().getType();
-        if (!bowType.equals("YOIMIYA") && !bowType.equals("EXPLOSION") && !bowType.equals("SOUL")) return;
+        if (!bowType.equals("YOIMIYA") && !bowType.equals("EXPLOSION") && !bowType.equals("SOUL") && !bowType.equals("CURSED")) return;
         if (event.getAction().name().contains("RIGHT_CLICK")) {
             if (!chargingStartTimes.containsKey(player.getUniqueId())) {
                 plugin.getLogger().info("Player " + player.getName() + " started charging " + bowType + " bow");
@@ -217,6 +217,19 @@ public class BowChargingListener implements Listener {
                     fullyChargedStatus.put(playerId, isNowFullyCharged);
                     updateSoulCharge(player, chargePercent);
                 }
+                else if (bowType.equals("CURSED")) {
+                    double chargePercent = Math.min(1.0, chargeTime / chargeTargetMs);
+                    chargeTimers.put(playerId, chargePercent);
+                    boolean wasFullyCharged = fullyChargedStatus.getOrDefault(playerId, false);
+                    boolean isNowFullyCharged = chargePercent >= 1.0;
+
+                    if (!wasFullyCharged && isNowFullyCharged) {
+                        player.playSound(player.getLocation(), Sound.ENTITY_WITCH_CELEBRATE, 1.0f, 1.0f);
+                    }
+
+                    fullyChargedStatus.put(playerId, isNowFullyCharged);
+                    updateCursedNodes(player, chargePercent);
+                }
             }
         }.runTaskTimer(plugin, 0L, 1L); 
         chargingTasks.put(playerId, task);
@@ -323,25 +336,55 @@ public class BowChargingListener implements Listener {
             }
         }
     }
-    private void applyGlowingToNearbyTargets(Player shooter, String targetType, double range) {
-        shooter.getNearbyEntities(range, range, range).stream()
-                .filter(entity -> {
-                    if (entity.equals(shooter)) return false;
-                    if (targetType.equals("DEBUG") && entity.getType() == org.bukkit.entity.EntityType.IRON_GOLEM) {
-                        return true;
-                    } else if (targetType.equals("PLAYER") && entity instanceof Player) {
-                        return true;
-                    }
-                    return false;
-                })
-                .forEach(entity -> {
-                    if (entity instanceof org.bukkit.entity.LivingEntity) {
-                        ((org.bukkit.entity.LivingEntity) entity).addPotionEffect(
-                                new PotionEffect(PotionEffectType.GLOWING, 200, 0)
-                        );
-                    }
-                });
+    private void updateCursedNodes(Player player, double chargePercent) {
+        UUID playerId = player.getUniqueId();
+        double ringRadius = 1.5;
+        double distance = 2.0;
+        int totalNodes = 8;
+        int nodesToShow = (int)(chargePercent * totalNodes);
+
+        visibleRings.put(playerId, nodesToShow);
+
+        Location eyeLocation = player.getEyeLocation();
+        Vector direction = eyeLocation.getDirection();
+        Vector perpendicular1 = getPerpendicular(direction);
+        Vector perpendicular2 = direction.clone().crossProduct(perpendicular1).normalize();
+        Location center = eyeLocation.clone().add(direction.clone().multiply(distance));
+
+        for (int i = 0; i < nodesToShow; i++) {
+            double angle = 2 * Math.PI * i / totalNodes;
+            double x = ringRadius * Math.cos(angle);
+            double y = ringRadius * Math.sin(angle);
+            Vector offset = perpendicular1.clone().multiply(x).add(perpendicular2.clone().multiply(y));
+            Location particleLocation = center.clone().add(offset);
+
+            player.getWorld().spawnParticle(
+                    Particle.SPELL_WITCH,
+                    particleLocation,
+                    3,
+                    0.01, 0.01, 0.01,
+                    0.01
+            );
+        }
+
+        if (chargePercent >= 1.0) {
+            if (random.nextDouble() < 0.3) {
+                double angle = random.nextDouble() * Math.PI * 2;
+                double dist = 0.7 + random.nextDouble() * 0.5;
+                Location particleLoc = player.getLocation().add(
+                        Math.cos(angle) * dist,
+                        1.0 + random.nextDouble() * 1.0,
+                        Math.sin(angle) * dist
+                );
+                player.getWorld().spawnParticle(
+                        Particle.DRAGON_BREATH,
+                        particleLoc,
+                        1, 0, 0, 0, 0.01
+                );
+            }
+        }
     }
+
     private void drawParticleAtPosition(Player player, double distance, double radius, int totalParticles,
                                         int position, Particle particleType, int ringType) {
         Location eyeLocation = player.getEyeLocation();

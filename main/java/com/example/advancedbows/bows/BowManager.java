@@ -20,7 +20,8 @@ public class BowManager {
         registerBow(new EndBow(plugin));
         registerBow(new YoimiyaBow(plugin));
         registerBow(new ExplosionBow(plugin));
-        registerBow(new SoulBow(plugin)); 
+        registerBow(new SoulBow(plugin));
+        registerBow(new CursedBow(plugin));
     }
     public void registerBow(SpecialBow bow) {
         registeredBows.put(bow.getType().toLowerCase(), bow);

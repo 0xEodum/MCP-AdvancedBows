@@ -122,6 +122,20 @@ public class GiveBowCommand implements CommandExecutor, TabCompleter {
                     completions.add("fangCount=8");
                 }
             }
+            else if (bowType.equals("CURSED")) {
+                if (args.length == 3) {
+                    completions.add("targetType=PLAYER");
+                    completions.add("targetType=DEBUG");
+                } else if (args.length == 4) {
+                    completions.add("range=10.0");
+                } else if (args.length == 5) {
+                    completions.add("chargeTime=3.0");
+                } else if (args.length == 6) {
+                    completions.add("damagePercent=5.0");
+                } else if (args.length == 7) {
+                    completions.add("effectDuration=5");
+                }
+            }
         }
         return completions;
     }
@@ -155,6 +169,13 @@ public class GiveBowCommand implements CommandExecutor, TabCompleter {
             parameters.put("beamLength", plugin.getConfigManager().getDefaultSoulBeamLength());
             parameters.put("fangRadius", plugin.getConfigManager().getDefaultSoulFangRadius());
             parameters.put("fangCount", plugin.getConfigManager().getDefaultSoulFangCount());
+        }
+        else if (bowType.equals("CURSED")) {
+            parameters.put("targetType", plugin.getConfigManager().getDefaultCursedTargetType());
+            parameters.put("range", plugin.getConfigManager().getDefaultCursedRange());
+            parameters.put("chargeTime", plugin.getConfigManager().getDefaultCursedChargeTime());
+            parameters.put("damagePercent", plugin.getConfigManager().getDefaultCursedDamagePercent());
+            parameters.put("effectDuration", plugin.getConfigManager().getDefaultCursedEffectDuration());
         }
         for (String param : paramArgs) {
             String[] parts = param.split("=", 2);
@@ -240,6 +261,19 @@ public class GiveBowCommand implements CommandExecutor, TabCompleter {
                 try {
                     int count = Integer.parseInt(value);
                     parameters.put("fangCount", Math.max(4, Math.min(16, count)));
+                } catch (NumberFormatException e) {
+                }
+            }
+            else if (key.equals("damagepercent")) {
+                try {
+                    double damagePercent = Double.parseDouble(value);
+                    parameters.put("damagePercent", Math.max(1.0, Math.min(20.0, damagePercent)));
+                } catch (NumberFormatException e) {
+                }
+            } else if (key.equals("effectduration")) {
+                try {
+                    int effectDuration = Integer.parseInt(value);
+                    parameters.put("effectDuration", Math.max(1, Math.min(30, effectDuration)));
                 } catch (NumberFormatException e) {
                 }
             }
